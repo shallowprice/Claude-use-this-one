@@ -266,29 +266,49 @@ not computational.** Band III is the direct attempt to remove it; note that its
 
 ## 6. The AI contributions — factual state
 
-**The 67.25% result.** In August 2026 an internal research version of Claude
-(Anthropic) proved unconditionally that **> 67.250%** of non-trivial zeros are
-simple *and* on the critical line — the previous unconditional record was 41.6%
-(Pratt–Robles–Zaharescu–Zeindler 2020, after Conrey's 40.77% in 1989).
+**The result.** Alpöge–Furman, *More than two thirds of the zeta zeros are
+simple and on the critical line* (**arXiv 2608.13637v2**, 13 Aug 2026) — the
+paper behind Anthropic's announcement, produced by an internal research version
+of Claude and verified by Levent Alpöge and Ralph Furman. Unconditionally:
 
-Method: a function space carrying the **Weil-induced quadratic form**; positive-
-and negative-definite subspaces for on- and off-line zeros; a **rank–trace
-inequality** for Hermitian matrices; a second-moment calculation over the zeros
-via the explicit formula. The decisive move was treating the whole space at once,
-positive and negative parts jointly, with the form allowed to be **non-diagonal**.
-Inputs: Aryan; Baluyot–Goldston–Suriajaya–Turnage-Butterbaugh; Bombieri (2000).
+- **≥ 2/3** of non-trivial zeros, counted with multiplicity, are **simple and on
+  the critical line**; **≥ 5/6** are distinct.
+- With the **Montgomery–Taylor window** the constants become **0.6725** and
+  **0.8362**.
+- Previous unconditional records: **5/12** (= 0.4167) and 0.6603.
+- Extends to **primitive Dirichlet L-functions**, and is **formally verified in
+  Lean 4**.
 
-Verification chain, unusually strong: internal review (Levent Alpöge, Ralph
-Furman); numerical testing; **external review by Brian Conrey and Dan Goldston**
-— the authors of the records it broke; a **Lean formalization** (with Eric
-Easley) passing the standard validator; and an independent re-derivation by
-**Lamzouri (2609.02882)** which adds two estimates the AI paper does not contain.
-It checks out.
+**The mechanism — this is the part that matters structurally.** In their own
+words, the argument makes Montgomery's 1973 deduction unconditional:
+
+> *"the Riemann hypothesis, classically needed to read the zero side as a
+> positive sum over real ordinates, is replaced by a **rank–trace inequality
+> applied to a finite compression of Weil's Hermitian form**, with **Sylvester's
+> law of inertia handling off-line pairs**."*
+
+Analytic inputs: Aryan; Baluyot–Goldston–Suriajaya–Turnage-Butterbaugh.
+
+That is a general technique for **removing the RH hypothesis from a finite
+Weil-form argument**, and it is the single most transferable idea in the 2026
+literature. Every Band II program (§3.2) currently poses its central statement
+*under RH* — CCM, Suzuki and Shi all assume real ordinates to get positivity.
+Alpöge–Furman show that a finite compression plus inertia bookkeeping can do
+without it. Whether that transfers from a counting statement to an ordinate-
+recovery or positivity statement is, as far as we can tell, open and unexamined.
+See `docs/shi-questions.md` Q1.
+
+**Verification chain**, unusually strong: internal review by Alpöge and Furman;
+numerical testing; **external review by Brian Conrey and Dan Goldston** — authors
+of the records it broke; the Lean 4 formalization (with Eric Easley); and an
+independent re-derivation by **Lamzouri (2609.02882)** adding two estimates the
+original does not contain (88.76% simple-or-critical; 83.62% average). It checks
+out.
 
 **But read Lamzouri's method.** He replaces *the entire finite-dimensional matrix
 framework* with a single Hilbert space inequality, enabling direct application of
 Montgomery's pair correlation theorem in the unconditional form of
-Baluyot–Goldston–Suriajaya–Turnage-Butterbaugh. The Weil-form scaffolding was
+Baluyot–Goldston–Suriajaya–Turnage-Butterbaugh. The Weil-matrix scaffolding was
 **removable**; the content was pair correlation. Anthropic states plainly: *"We
 don't expect that the techniques Claude used will lead to proving the Riemann
 hypothesis."*
@@ -373,7 +393,7 @@ design, per the agreement to set our own work aside for now.
 ## Sources
 
 **Band I:** 2405.20552, 2607.04632, 2603.21490, 2004.09765, 1801.05914,
-1904.12438, 2603.01711, 2501.14545, 2511.20059, 2609.02882.
+1904.12438, 2603.01711, 2501.14545, 2511.20059, 2609.02882, 2608.13637.
 
 **Band II:** 2511.22755, 2511.23257, 2602.04022, 2605.20224, 2607.02828,
 2606.09096, 2301.00421, 2609.04908, 2607.24830, 2310.18423, 2106.01715.
@@ -382,4 +402,5 @@ design, per the agreement to set our own work aside for now.
 2112.08820, 2401.08401, 2501.06560.
 
 **Obstruction:** 1509.05576.  **Formalization:** 2503.00959.
-**AI result:** https://www.anthropic.com/research/riemann-zeta + 2609.02882.
+**AI result:** arXiv 2608.13637 (Alpöge–Furman) + 2609.02882 (Lamzouri) +
+https://www.anthropic.com/research/riemann-zeta.
