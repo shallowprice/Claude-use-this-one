@@ -1,0 +1,7 @@
+# Lean build artifacts (Mathlib cache is ~8GB)
+.lake/
+build/
+*.olean
+*.ilean
+*.trace
+__pycache__/
