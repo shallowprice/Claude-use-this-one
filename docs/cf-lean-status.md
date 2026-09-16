@@ -65,6 +65,20 @@ All six are finite linear algebra.
   so `PosDef.dotProduct_mulVec_pos` gives `0 < star x ⬝ᵥ M *ᵥ x` **in `ℂ`**
   directly, under `open scoped ComplexOrder`. No `RCLike.re` detour needed.
 
+## Revised target (supersedes the `rank = n` form)
+
+`roots_on_circle` currently takes `hrank : (s.bigMat n).rank = n`. Per
+`docs/cf-positivity.md` §4 the better hypothesis is a **simple minimal
+eigenvalue**: `T` Hermitian Toeplitz, `λ_1` simple, `ξ` an eigenvector for `λ_1`.
+That version needs no positivity and no rank condition, subsumes the current one
+(`λ_1 = 0`), and — unlike exact rank — is certifiable by enclosure, since a
+spectral gap is margin-robust.
+
+Doing this in Lean means adding a reduction lemma `T ↦ T − λ_1 I` (stays
+Hermitian Toeplitz; PSD; kernel = the `λ_1`-eigenspace) and keeping Lemmas A–D
+unchanged underneath. Worth doing before grinding out the six `sorry`s, since it
+changes which hypotheses they are proved under.
+
 ## Scope
 
 This formalizes **Corollary 1.1 only** — the finite-level statement. Not in

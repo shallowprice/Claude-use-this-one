@@ -136,30 +136,59 @@ roots of `P`. ∎
 
 ---
 
-## 4. Numerical validation
+## 4. Numerical validation, and a correction
 
 `scripts/cf_check.py` — builds `T = V D V*` on `n` distinct nodes of `𝕋` with
-positive weights (the Carathéodory–Fejér normal form, guaranteeing PSD Toeplitz
-of rank exactly `n`), extracts `ξ`, and checks every step. For
-`n ∈ {3,5,8}` × 2 seeds: Toeplitz error `< 4e−15`, `‖Cᴴ T′ C − T′‖ < 3e−14`,
-`max | |root| − 1 | < 1.4e−12`, `λ_min(T′) > 0` throughout, and
-`eig(C) = roots(P)` to `< 4e−14`. Also confirms `|ξ_0| = |ξ_n|` in every case —
-the self-inversive property CvS derive in Prop 2.1(1).
+positive weights (the Carathéodory–Fejér normal form, so PSD Toeplitz of rank
+exactly `n`), extracts `ξ`, checks every step. For `n ∈ {3,5,8}` × 2 seeds:
+Toeplitz error `< 4e−15`, `‖Cᴴ T′ C − T′‖ < 3e−14`, `max | |root| − 1 | < 1.4e−12`,
+`λ_min(T′) > 0` throughout, `eig(C) = roots(P)` to `< 4e−14`. Also confirms
+`|ξ_0| = |ξ_n|` — the self-inversive property of CvS Prop 2.1(1).
 
-`scripts/cf_check2.py` — **the discriminating test.** Drops positivity: random
-*indefinite* Hermitian Toeplitz matrices with a kernel vector having `ξ_n ≠ 0`.
+`scripts/cf_check2.py` — drops positivity: indefinite Hermitian Toeplitz.
+`‖Cᴴ T′ C − T′‖ < 9e−15` in all trials, so **Lemma A genuinely needs no
+positivity**, as its proof says. Two of nine trials show roots off the circle.
 
-- `‖Cᴴ T′ C − T′‖ < 9e−15` in **all** trials → **Lemma A genuinely needs no
-  positivity**, as the proof says.
-- But the conclusion fails: two of nine trials give `max | |root| − 1 |` of
-  `5.7e−01` and `2.7e−01`. Roots well off the circle.
+### Correction: cf_check2 selected the wrong eigenvector
 
-So the architecture is confirmed with a counterexample, not just a consistency
-check: the identity is free, and **all** the RH-relevant content sits in
-Lemma B — in `T′ ≻ 0`, which is exactly positivity. That matches CvS's own remark
-that the difficulty becomes verifying that zero is the simple minimal eigenvalue.
+`cf_check2.py` picks `argmin |w|` — the eigenvalue **nearest zero**. That is not
+the vector the theorem is about. The theorem concerns the **minimal** eigenvalue.
+The off-circle roots are an artifact of that choice, and the conclusion drawn
+from them ("positivity is load-bearing") was wrong.
 
----
+`scripts/cf_check3.py` redoes it correctly. Fifteen random Hermitian Toeplitz
+matrices, `n ∈ {3,4,5,6,8}`, **every one strongly indefinite**
+(`λ_min` from `−2.2` to `−7.8`, so nowhere near PSD):
+
+| eigenvector used | `max | |root| − 1 |` |
+|---|---|
+| minimal eigenvalue | `≤ 2.4e−15` in **all 15** |
+| nearest zero | fails in 6 of 15, up to `9.5e−01` |
+
+### The correct hypothesis is a spectral gap, not exact rank
+
+**Claim.** Let `T` be Hermitian Toeplitz of size `n+1` whose *minimal* eigenvalue
+`λ_1` is **simple**. Let `ξ` be an eigenvector for `λ_1`. Then all roots of
+`P_ξ` lie on the unit circle. No positivity, no rank hypothesis.
+
+*Proof.* `T − λ_1 I` is again Hermitian Toeplitz — only `c_0` shifts, and it
+stays real since `λ_1` is real. It is PSD because `λ_1` is the minimum, and its
+kernel is exactly the `λ_1`-eigenspace, which is 1-dimensional by simplicity. So
+`T − λ_1 I` is PSD Toeplitz of rank `n` with kernel vector `ξ`, and §3 applies. ∎
+
+This is the finite shadow of CvS **Theorem 1.2**, which likewise asks only that
+the minimum of the spectrum be *"a simple, isolated eigenvalue λ"* — **not** that
+`λ = 0`. The `rank T = n` phrasing of Corollary 1.1 is the special case `λ_1 = 0`.
+
+**Why this matters for certification.** "`λ_min = 0` exactly" is not checkable by
+interval arithmetic — a margin-robust certificate proving `T ⪰ −εI` cannot tell
+`λ_min = 0` from `λ_min = ε/2`. But "`λ_2 − λ_1 ≥ δ > 0`" is a *gap*, and a gap
+is exactly what enclosure methods are good at. Restating the hypothesis moves the
+requirement from an exact condition to a robust one.
+
+The gap is also what controls the *eigenvector*: separation is the hypothesis in
+Davis–Kahan-type bounds. So a single certified quantity — the bottom spectral gap
+— supplies both the hypothesis and the stability.
 
 ## 5. What this buys for formalization
 
